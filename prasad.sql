@@ -8,7 +8,7 @@ CREATE TABLE orders (
     customer_id INT NOT NULL,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total_amount DECIMAL(10, 2) NOT NULL,
-    payment_method VARCHAR(50),
+    payment_method INT,
     payment_status ENUM(
         'PENDING',
         'PAID',
@@ -23,9 +23,9 @@ CREATE TABLE orders (
         'CANCELLED'
     ) DEFAULT 'PLACED',
     shipping_address VARCHAR(500) NOT NULL,
-    city VARCHAR(100),
+    city INT,
     state VARCHAR(100),
-    postal_code VARCHAR(20),
+    postal_code INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_orders_customer
@@ -47,16 +47,16 @@ INSERT INTO orders (
     postal_code
 ) VALUES
 (
-    1, 2499.00, 'UPI', 'PAID', 'DELIVERED',
-    'MG Road', 'Pune', 'Maharashtra', '411001'
+    1, 2499.00, 1, 'PAID', 'DELIVERED',
+    'MG Road', 101, 'Maharashtra', 411001
 ),
 (
-    2, 1599.50, 'Credit Card', 'PAID', 'SHIPPED',
-    'Andheri West', 'Mumbai', 'Maharashtra', '400001'
+    2, 1599.50, 2, 'PAID', 'SHIPPED',
+    'Andheri West', 102, 'Maharashtra', 400001
 ),
 (
-    3, 799.00, 'Cash on Delivery', 'PENDING', 'PLACED',
-    'College Road', 'Nashik', 'Maharashtra', '422001'
+    3, 799.00, 3, 'PENDING', 'PLACED',
+    'College Road', 103, 'Maharashtra', 422001
 );
 
 -- View all orders
