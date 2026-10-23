@@ -10,15 +10,15 @@ CREATE TABLE customers (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    phone VARCHAR(20),
+    phone BIGINT,
     password_hash VARCHAR(255) NOT NULL,
-    date_of_birth DATE,
+    date_of_birth INT,
     gender VARCHAR(20),
     address_line1 VARCHAR(255),
     address_line2 VARCHAR(255),
     city VARCHAR(100),
     state VARCHAR(100),
-    postal_code VARCHAR(20),
+    postal_code INT,
     country VARCHAR(100) DEFAULT 'India',
     is_active BOOLEAN DEFAULT TRUE,
     email_verified BOOLEAN DEFAULT FALSE,
@@ -34,6 +34,7 @@ INSERT INTO customers (
     email,
     phone,
     password_hash,
+    date_of_birth,
     city,
     state,
     postal_code,
@@ -42,23 +43,26 @@ INSERT INTO customers (
 (
     'Rahul', 'Sharma',
     'rahul@example.com',
-    '9876543210',
+    9876543210,
     'replace_with_password_hash',
-    'Pune', 'Maharashtra', '411001', 'India'
+    20020115,
+    'Pune', 'Maharashtra', 411001, 'India'
 ),
 (
     'Priya', 'Patil',
     'priya@example.com',
-    '9876501234',
+    9876501234,
     'replace_with_password_hash',
-    'Mumbai', 'Maharashtra', '400001', 'India'
+    20030520,
+    'Mumbai', 'Maharashtra', 400001, 'India'
 ),
 (
     'Amit', 'Verma',
     'amit@example.com',
-    '9123456780',
+    9123456780,
     'replace_with_password_hash',
-    'Nashik', 'Maharashtra', '422001', 'India'
+    20011210,
+    'Nashik', 'Maharashtra', 422001, 'India'
 );
 
 -- View all customers
@@ -82,7 +86,7 @@ WHERE email = 'rahul@example.com';
 UPDATE customers
 SET address_line1 = 'MG Road',
     city = 'Pune',
-    postal_code = '411001'
+    postal_code = 411001
 WHERE customer_id = 1;
 
 -- Deactivate a customer
