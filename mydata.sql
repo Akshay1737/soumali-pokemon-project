@@ -1,95 +1,98 @@
 
--- Create database
-CREATE DATABASE ecommerce_db;
-
+-- Select the database created in mydata.sql
 USE ecommerce_db;
 
--- Create customers table
-CREATE TABLE customers (
-    customer_id INT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    phone BIGINT,
-    password_hash VARCHAR(255) NOT NULL,
-    date_of_birth INT,
-    gender VARCHAR(20),
-    address_line1 VARCHAR(255),
-    address_line2 VARCHAR(255),
+-- Create orders table connected to customers
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    payment_method VARCHAR(50),
+
+    payment_status ENUM(
+        'PENDING',
+        'PAID',
+        'FAILED',
+        'REFUNDED'
+    ) DEFAULT 'PENDING',
+
+    order_status ENUM(
+        'PLACED',
+        'PROCESSING',
+        'SHIPPED',
+        'DELIVERED',
+        'CANCELLED'
+    ) DEFAULT 'PLACED',
+
+    shipping_address VARCHAR(500) NOT NULL,
     city VARCHAR(100),
     state VARCHAR(100),
-    postal_code INT,
-    country VARCHAR(100) DEFAULT 'India',
-    is_active BOOLEAN DEFAULT TRUE,
-    email_verified BOOLEAN DEFAULT FALSE,
+    postal_code VARCHAR(20),
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP
+
+    CONSTRAINT fk_orders_customer
+        FOREIGN KEY (customer_id)
+        REFERENCES customers(customer_id)
+        ON DELETE RESTRICT
 );
 
--- Insert sample customers
-INSERT INTO customers (
-    first_name,
-    last_name,
-    email,
-    phone,
-    password_hash,
-    date_of_birth,
+-- Insert sample orders for customers from mydata.sql
+INSERT INTO orders (
+    customer_id,
+    total_amount,
+    payment_method,
+    payment_status,
+    order_status,
+    shipping_address,
     city,
     state,
-    postal_code,
-    country
+    postal_code
 ) VALUES
 (
-    'Rahul', 'Sharma',
-    'rahul@example.com',
-    9876543210,
-    'replace_with_password_hash',
-    20020115,
-    'Pune', 'Maharashtra', 411001, 'India'
+    1, 2499.00, 'UPI', 'PAID', 'DELIVERED',
+    'MG Road', 'Pune', 'Maharashtra', '411001'
 ),
 (
-    'Priya', 'Patil',
-    'priya@example.com',
-    9876501234,
-    'replace_with_password_hash',
-    20030520,
-    'Mumbai', 'Maharashtra', 400001, 'India'
+    2, 1599.50, 'Credit Card', 'PAID', 'SHIPPED',
+    'Andheri West', 'Mumbai', 'Maharashtra', '400001'
 ),
 (
-    'Amit', 'Verma',
-    'amit@example.com',
-    9123456780,
-    'replace_with_password_hash',
-    20011210,
-    'Nashik', 'Maharashtra', 422001, 'India'
+    3, 799.00, 'Cash on Delivery', 'PENDING', 'PLACED',
+    'College Road', 'Nashik', 'Maharashtra', '422001'
 );
 
--- View all customers
+-- View all orders
+SELECT * FROM orders;
+
+-- View orders with customer details
 SELECT
-    customer_id,
-    first_name,
-    last_name,
-    email,
-    phone,
-    city,
-    state,
-    created_at
-FROM customers;
+    o.order_id,
+    o.customer_id,
+    CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+    c.email,
+    c.phone,
+    o.total_amount,
+    o.payment_method,
+    o.payment_status,
+    o.order_status,
+    o.order_date
+FROM orders AS o
+INNER JOIN customers AS c
+    ON o.customer_id = c.customer_id;
 
--- Find a customer by email
+-- Update an order status
+UPDATE orders
+SET order_status = 'DELIVERED'
+WHERE order_id = 2;
+
+-- Find orders with pending payments
 SELECT *
-FROM customers
-WHERE email = 'rahul@example.com';
+FROM orders
+WHERE payment_status = 'PENDING';
 
--- Update customer address
-UPDATE customers
-SET address_line1 = 'MG Road',
-    city = 'Pune',
-    postal_code = 411001
+-- Find all orders for a specific customer
+SELECT *
+FROM orders
 WHERE customer_id = 1;
-
--- Deactivate a customer
-UPDATE customers
-SET is_active = FALSE
-WHERE customer_id = 2;
