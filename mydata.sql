@@ -1,44 +1,8 @@
 
--- Select the database created in mydata.sql
+-- Select the database
 USE ecommerce_db;
 
--- Create orders table connected to customers
-CREATE TABLE orders (
-    order_id INT AUTO_INCREMENT PRIMARY KEY,
-    customer_id INT NOT NULL,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    total_amount DECIMAL(10, 2) NOT NULL,
-    payment_method VARCHAR(50),
-
-    payment_status ENUM(
-        'PENDING',
-        'PAID',
-        'FAILED',
-        'REFUNDED'
-    ) DEFAULT 'PENDING',
-
-    order_status ENUM(
-        'PLACED',
-        'PROCESSING',
-        'SHIPPED',
-        'DELIVERED',
-        'CANCELLED'
-    ) DEFAULT 'PLACED',
-
-    shipping_address VARCHAR(500) NOT NULL,
-    city VARCHAR(100),
-    state VARCHAR(100),
-    postal_code VARCHAR(20),
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_orders_customer
-        FOREIGN KEY (customer_id)
-        REFERENCES customers(customer_id)
-        ON DELETE RESTRICT
-);
-
--- Insert sample orders for customers from mydata.sql
+-- Insert sample orders
 INSERT INTO orders (
     customer_id,
     total_amount,
